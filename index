@@ -195,7 +195,7 @@ function displayResult(result) {
     <p>AI Content Percentage: ${result.aiContentPercentage.toFixed(2)}%</p>
     <p>Passive text percentage: ${result.passivePercentage.toFixed(2)}%</p>
     <p>AI words/phrases: ${result.specialWordsPercentageSet1.toFixed(2)}%</p>
-    <p>Generic words/phrases percentage (Set 2): ${result.specialWordsPercentageSet2.toFixed(2)}%</p>
+    <p>Generic words/phrases percentage: ${result.specialWordsPercentageSet2.toFixed(2)}%</p>
     <p>Tone of the content: ${result.tone}</p>
     <p>Total Words: ${result.totalWords}</p>
     <p>AI Word Count: ${result.aiWordCount}</p>
