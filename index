@@ -1,0 +1,209 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free AI Content Detector for Indian context | Made in India</title>
+<style>
+    textarea {
+        width: 100%;
+        height: 200px;
+        padding: 20px;
+        font-size: 16px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        resize: vertical;
+    }
+
+    button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #e74c3c;
+        color: #ffffff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #c0392b;
+    }
+
+    #result {
+        margin-top: 20px;
+        padding: 20px;
+        border-radius: 5px;
+        background-color: #f8f9fa;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .result-item {
+        margin-bottom: 10px;
+    }
+
+    .result-item strong {
+        color: #5c6ac4;
+    }
+
+    .result-item.ai-generated {
+        color: #e74c3c;
+    }
+</style>
+
+<textarea id="textInput" placeholder="Enter your text here..."></textarea>
+<button onclick="analyzeText()">Analyse</button>
+<div id="result"></div>
+
+<script>
+    function analyzeText() {
+        const text = document.getElementById('textInput').value;
+        const result = detectAIContent(text);
+        displayResult(result);
+    }
+
+    function detectAIContent(text) {
+        const specialWordsSet1 = [
+            'unleash', 'embark', 'embarking', 'elevate', 'By doing so', 'navigate', 'navigating', 'enhance', 'enhancing', 'critical', 'harness', 'in conclusion', 'end word', 'Advancement in the realm', 'Aims to bridge', 'Aims to democratize', 'Aims to foster innovation and collaboration', 'Becomes increasingly evident', 'Behind the Veil', 'Breaking barriers', 'Breakthrough has the potential to revolutionize the way', 'Bringing us', 'Bringing us closer to a future', 'By combining the capabilities', 'By harnessing the power', 'Capturing the attention', 'Continue to advance', 'Continue to make significant strides', 'Continue to push the boundaries', 'Continues to progress rapidly', 'Crucial to be mindful', 'Crucially', 'Cutting-edge', 'Drive the next big', 'Encompasses a wide range of real-life scenarios', 'Enhancement further enhances', 'Ensures that even', 'Essential to understand the nuances', 'Excitement', 'Exciting opportunities', 'Exciting possibilities', 'Exciting times lie ahead as we unlock the potential of', 'Excitingly', 'Expanded its capabilities', 'Expect to witness transformative breakthroughs', 'Expect to witness transformative breakthroughs in their capabilities', 'Exploration of various potential answers', 'Explore the fascinating world', 'Exploring new frontiers', 'Exploring this avenue', 'Foster the development', 'Future might see us placing', 'Groundbreaking way', 'is important to', 'key component', 'pivotal role', 'gracefully can', 'surgical intervention', 'robust', 'state of the art', 'state-of-the-art', 'diverse', 'is crucial', 'not only', 'checking account',
+            'Groundbreaking advancement', 'Groundbreaking study', 'Groundbreaking technology',
+            'Have come a long way in recent years', 'Hold promise', 'Implications are profound',
+            'Improved efficiency in countless ways', 'In the fast-paced world', 'Innovative service', 'Intrinsic differences',
+            'It discovered an intriguing approach', 'It remains to be seen', 'It serves as a stepping stone towards the realization',
+            'Latest breakthrough signifies', 'Latest offering', 'Let\'s delve into the exciting details',
+            'Main message to take away', 'Make informed decisions', 'Mark a significant step forward', 'Mind-boggling figure',
+            'More robust evaluation', 'Navigate the landscape', 'Notably', 'One step closer', 'One thing is clear',
+            'Only time will tell', 'Opens up exciting possibilities', 'Paving the way for enhanced performance',
+            'Possibilities are endless', 'Potentially revolutionizing the way', 'Push the boundaries',
+            'Raise fairness concerns', 'Raise intriguing questions', 'Rapid pace of development', 'Rapidly developing', 'Redefine the future', 'Remarkable abilities', 'Remarkable breakthrough', 'Remarkable proficiency', 'Remarkable success', 'Remarkable tool', 'Remarkably', 'Renowned', 'Represent a major milestone',
+            'Represents a significant milestone in the field', 'Revolutionize the way', 'Revolutionizing the way',
+            'Risks of drawing unsupported conclusions', 'Seeking trustworthiness', 'Significant step forward',
+            'Significant strides', 'The necessity of clear understanding', 'There is still room for improvement',
+            'Transformative power', 'Truly exciting', 'Uncover hidden trends', 'Understanding of the capabilities',
+            'Unleashing the potential', 'Unlocking the power', 'Unraveling', 'We can improve understanding and decision-making',
+            'Welcome your thoughts', 'What sets this apart', 'What\'s more', 'healthcare professional', 'deep dive', 'delve'
+        ];
+        const specialWordsSet2 = ['may', 'might be', 'can', 'could have been', 'may be', 'can be', 'been', 'have been', 'might', 'might have', 'should be'];
+
+        const negativeWords = ['no', 'not'];
+        const confidentWords = ['definitely', 'certainly', 'clearly', 'undoubtedly'];
+        const promotionalWords = ['amazing', 'unbeatable', 'exclusive', 'best'];
+        const tooPromotionalWords = ['limited time offer', 'buy now', 'once-in-a-lifetime'];
+
+        const passiveWords = ['was', 'were', 'been', 'being', 'have been'];
+
+        const words = text.toLowerCase().split(/\s+/);
+        let confidentCount = 0;
+        let negativeCount = 0;
+        let promoCount = 0;
+        let toopromoCount = 0;
+
+        for (const word of words) {
+            if (negativeWords.includes(word)) {
+                negativeCount++;
+            } else if (confidentWords.includes(word)) {
+                confidentCount++;
+}           
+        else if (promotionalWords.includes(word)) {
+            promoCount++;
+        } else if (tooPromotionalWords.includes(word)) {
+            toopromoCount++;
+        }
+    }
+
+    if (confidentCount > negativeCount && confidentCount > promoCount && confidentCount > toopromoCount) {
+        tone = 'CONFIDENT';
+    } else if (negativeCount > confidentCount && negativeCount > promoCount && negativeCount > toopromoCount) {
+        tone = 'NEGATIVE';
+    } else if (promoCount > confidentCount && promoCount > negativeCount && promoCount > toopromoCount) {
+        tone = 'PROMOTIONAL';
+    } else if (toopromoCount > confidentCount && toopromoCount > negativeCount && toopromoCount > promoCount) {
+        tone = 'TOO MUCH PROMOTIONAL TONE';
+    } else {
+        tone = 'TOO GENERIC, NOT RECOMMENDED TO USE THIS CONTENT';
+    }
+
+    const passiveSentences = countPassiveSentences(text);
+    const totalSentences = text.split(/[.!?]/).filter(s => s.trim().length > 0).length;
+    const passivePercentage = (passiveSentences / totalSentences) * 100;
+
+    const articleText = text.toLowerCase();
+    const wordCountsSet1 = countWordOccurrences(articleText, specialWordsSet1);
+    const wordCountsSet2 = countWordOccurrences(articleText, specialWordsSet2);
+
+    const totalWords = text.split(/\s+/).length;
+    const specialWordsCountSet1 = Object.values(wordCountsSet1).reduce((sum, count) => sum + count, 0);
+    const specialWordsPercentageSet1 = (specialWordsCountSet1 / totalWords) * 100;
+
+    const specialWordsCountSet2 = Object.values(wordCountsSet2).reduce((sum, count) => sum + count, 0);
+    const specialWordsPercentageSet2 = (specialWordsCountSet2 / totalWords) * 100;
+
+    // Calculate AI word count
+    const aiWordCount = specialWordsCountSet1 + specialWordsCountSet2;
+
+    // Calculate AI sentence count
+    const aiSentenceCount = Math.floor((aiWordCount / totalWords) * totalSentences);
+
+    const aiContentPercentage = specialWordsPercentageSet1 + specialWordsPercentageSet2 + (passivePercentage * 0.5);
+
+    const isAIGenerated = aiContentPercentage >= 15;
+
+    return {
+        isAIGenerated,
+        aiContentPercentage,
+        passivePercentage,
+        specialWordsPercentageSet1,
+        specialWordsPercentageSet2,
+        tone,
+        totalWords,
+        aiWordCount,
+        totalSentences,
+        aiSentenceCount
+    };
+}
+
+function countPassiveSentences(text) {
+    const passiveWords = ['was', 'were', 'been', 'being', 'have been'];
+    const sentences = text.split(/[.!?]/);
+    let passiveSentences = 0;
+
+    for (const sentence of sentences) {
+        const words = sentence.trim().split(/\s+/);
+        if (words.some(word => passiveWords.includes(word))) {
+            passiveSentences++;
+        }
+    }
+
+    return passiveSentences;
+}
+
+function countWordOccurrences(text, words) {
+    const wordCounts = {};
+    for (const word of words) {
+        const regex = new RegExp(`\\b${word}\\b`, 'gi');
+        const count = (text.match(regex) || []).length;
+        wordCounts[word] = count;
+    }
+    return wordCounts;
+}
+
+function displayResult(result) {
+    const resultDiv = document.getElementById('result');
+    resultDiv.innerHTML = `
+    <h2>Analysis Result</h2>
+    <p>Is AI-generated: ${result.isAIGenerated ? 'Yes' : 'No'}</p>
+    <p>AI Content Percentage: ${result.aiContentPercentage.toFixed(2)}%</p>
+    <p>Passive text percentage: ${result.passivePercentage.toFixed(2)}%</p>
+    <p>AI words/phrases: ${result.specialWordsPercentageSet1.toFixed(2)}%</p>
+    <p>Generic words/phrases percentage (Set 2): ${result.specialWordsPercentageSet2.toFixed(2)}%</p>
+    <p>Tone of the content: ${result.tone}</p>
+    <p>Total Words: ${result.totalWords}</p>
+    <p>AI Word Count: ${result.aiWordCount}</p>
+    <p>Total Sentences: ${result.totalSentences}</p>
+    <p>AI Sentence Count: ${result.aiSentenceCount}</p>
+    <p>Developed by <a href="https://www.linkedin.com/in/khushank-raj-mahawan-2801/">Khushank Raj Mahawan</a></p>
+  `;
+}
+</script>
+</body>
+</html>
